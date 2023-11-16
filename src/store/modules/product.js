@@ -1,7 +1,7 @@
 const state =
     {
         Images: [],
-        isFavorite: true,
+        isFavorite: [],
         products: [],
       }
      const mutations = {
@@ -13,6 +13,8 @@ const state =
               state.Images[product.id] = require("../../assets/favorite2.svg");
               state.isFavorite[product.id] = false;
             });
+            const storedFavorites = JSON.parse(localStorage.getItem('isFavorite')) || {};
+            state.isFavorite = { ...state.isFavorite, ...storedFavorites };
           },
           toggleFavorite(state, productId) {
             state.isFavorite[productId] = !state.isFavorite[productId];
@@ -21,6 +23,7 @@ const state =
             } else {
               state.Images[productId] = require("../../assets/favorite2.svg");
             }
+            localStorage.setItem('isFavorite', JSON.stringify(state.isFavorite));
           },
         }
       const actions= {

@@ -32,11 +32,9 @@ const state =
             }
           },
           increase({ commit, state }) {
-            // Pass productId to the increase mutation
             commit('increase', state.productDetails.id);
           },
           decrease({ commit, state }) {
-            // Pass productId to the decrease mutation
             commit('decrease', state.productDetails.id);
           },
       }

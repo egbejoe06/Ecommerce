@@ -17,9 +17,14 @@
             </div>
           </div>
           <div class="pd2">
-            <div class="pd3">
-              <h3>{{ productDetails.title }}</h3>
-              <h4>${{ normalPrice }}</h4>
+            <div class="pd21">
+              <div class="pd3">
+                <h3>{{ productDetails.title }}</h3>
+                <h4>${{ normalPrice }}</h4>
+              </div>
+              <div @click="toggleFavorite(productDetails.id)" class="isFavorite1 isFav1">
+                <img class="isFav2" :src="Images[productDetails.id]" alt="" />
+              </div>
             </div>
             <div class="pd4">
               <div class="pd41">
@@ -117,12 +122,17 @@ export default {
   },
   computed: {
     ...mapGetters("productdetails", ["total", "normalPrice", "number", "productDetails"]),
+    ...mapGetters("product", ["products", "isFavorite", "Images"]),
   },
   created() {
     const productId = this.$route.params.id;
     this.$store.dispatch("productdetails/fetchProductDetails", productId);
   },
+
   methods: {
+    toggleFavorite(productId) {
+      this.$store.dispatch("product/toggleProductFavorite", productId);
+    },
     increase() {
       const productId = this.productDetails.id;
       this.$store.commit("productdetails/increase", productId);
@@ -142,6 +152,21 @@ export default {
 };
 </script>
 <style>
+.pd21 {
+  display: flex;
+  gap: 35px;
+}
+.isFav1 {
+  border: 1px solid #d9dadb;
+  width: 32px;
+  height: 32px;
+  border-radius: 100%;
+}
+.isFav2 {
+  position: relative;
+  top: 6px;
+  left: 4px;
+}
 .buy1 {
   display: flex;
   height: 56px;

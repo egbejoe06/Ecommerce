@@ -72,41 +72,41 @@
           v-for="(product, index) in filteredProducts.slice(0, 12)"
           :key="product.id"
         >
-          <router-link :to="{ name: 'Productdetails', params: { id: product.id } }">
-            <div class="mm-1">
+          <div class="mm-1">
+            <router-link :to="{ name: 'Productdetails', params: { id: product.id } }">
               <div>
                 <img class="mm-img" :src="product.thumbnail" alt="" />
               </div>
-              <div class="mm1">
-                <div class="isFavorite">
+            </router-link>
+            <div class="mm1">
+              <div class="isFavorite">
+                <router-link :to="{ name: 'Productdetails', params: { id: product.id } }">
                   <span class="mm2">{{ product.title }}</span>
-                  <div @click="toggleFavorite(product.id)" class="isFavorite1">
-                    <img :src="Images[product.id]" alt="" />
-                  </div>
-                </div>
-                <div class="isFavorite2">
-                  <span class="mm3">{{ product.description }}</span>
+                </router-link>
+                <div @click="toggleFavorite(product.id)" class="isFavorite1">
+                  <img :src="Images[product.id]" alt="" />
                 </div>
               </div>
-              <div>
-                <div class="stars">
-                  <span v-for="n in Math.round(product.rating)" class="star"
-                    >&#9733;</span
-                  >
-                  <span v-for="n in 5 - Math.round(product.rating)" class="star"
-                    >&#9734;</span
-                  >
-                </div>
-              </div>
-              <div class="mm4">
-                <div class="mm5">${{ product.price }}</div>
-                <div class="mm7">
-                  ${{ calculateNormalPrice(product.discountPercentage, product.price) }}
-                </div>
-                <div class="mm6">-{{ product.discountPercentage }}%</div>
+              <div class="isFavorite2">
+                <span class="mm3">{{ product.description }}</span>
               </div>
             </div>
-          </router-link>
+            <div>
+              <div class="stars">
+                <span v-for="n in Math.round(product.rating)" class="star">&#9733;</span>
+                <span v-for="n in 5 - Math.round(product.rating)" class="star"
+                  >&#9734;</span
+                >
+              </div>
+            </div>
+            <div class="mm4">
+              <div class="mm5">${{ product.price }}</div>
+              <div class="mm7">
+                ${{ calculateNormalPrice(product.discountPercentage, product.price) }}
+              </div>
+              <div class="mm6">-{{ product.discountPercentage }}%</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -114,17 +114,15 @@
   </div>
 </template>
 <script>
+import { mapGetters } from "vuex";
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 export default {
   components: { Header, Footer },
   data() {
     return {
-      Images: [],
-      isFavorite: [],
       selectedCategory: null,
       searchQuery: "",
-      products: [],
       min: 10,
       max: 2100,
       minValue: 255,
@@ -139,7 +137,11 @@ export default {
       },
     };
   },
+  created() {
+    this.$store.dispatch("product/fetchProduct");
+  },
   computed: {
+    ...mapGetters("product", ["products", "isFavorite", "Images", "filteredProducts"]),
     filteredProducts() {
       return this.products.filter((product) => {
         const productPrice = parseFloat(product.price);
@@ -156,13 +158,7 @@ export default {
 
   methods: {
     toggleFavorite(productId) {
-      this.isFavorite[productId] = !this.isFavorite[productId];
-
-      if (this.isFavorite[productId]) {
-        this.Images[productId] = require("../../assets/favorite1.svg");
-      } else {
-        this.Images[productId] = require("../../assets/favorite2.svg");
-      }
+      this.$store.dispatch("product/toggleProductFavorite", productId);
     },
     selectCategory(category) {
       this.selectedCategory = category;
@@ -316,26 +312,6 @@ export default {
       ev.stopPropagation();
       self.setClickMove(ev);
     });
-
-    const skip = 0; // Number of items to skip
-    const limit = 100; // Number of items to retrieve
-
-    const url = `https://dummyjson.com/products?skip=${skip}&limit=${limit}`;
-
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        this.products = data.products;
-        this.Images = {};
-        this.isFavorite = {};
-        this.products.forEach((product) => {
-          this.Images[product.id] = require("../../assets/favorite2.svg");
-          this.isFavorite[product.id] = false;
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
   },
 };
 </script>
