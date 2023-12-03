@@ -1,7 +1,9 @@
+import createPersistedState from "vuex-persistedstate";
+
 const state =
     {
         Images: [],
-        isFavorite: [],
+        isFavorite: {},
         products: [],
       }
      const mutations = {
@@ -12,9 +14,8 @@ const state =
             state.products.forEach((product) => {
               state.Images[product.id] = require("../../assets/favorite2.svg");
               state.isFavorite[product.id] = false;
+              console.log(state.isFavorite[product.id])
             });
-            const storedFavorites = JSON.parse(localStorage.getItem('isFavorite')) || {};
-            state.isFavorite = { ...state.isFavorite, ...storedFavorites };
           },
           toggleFavorite(state, productId) {
             state.isFavorite[productId] = !state.isFavorite[productId];
@@ -23,7 +24,7 @@ const state =
             } else {
               state.Images[productId] = require("../../assets/favorite2.svg");
             }
-            localStorage.setItem('isFavorite', JSON.stringify(state.isFavorite));
+            console.log(state.favoriteProducts)
           },
         }
       const actions= {
@@ -51,8 +52,17 @@ const state =
         Images: state => state.Images,
         searchQuery: state => state.searchQuery,
         selectedCategory: state => state.selectedCategory,
+        favoriteProducts: (state) => {
+          return state.products.filter((product) => state.isFavorite[product.id]);
+        },
       }
-
+      const plugins = [
+        // Use vuex-persistedstate as a Vuex plugin
+        createPersistedState({
+          key: "your-vuex-key", // change this to a unique key
+          paths: ["isFavorite"], // specify which state you want to persist
+        }),
+      ];
 
       export default {
         namespaced: true,
@@ -60,4 +70,5 @@ const state =
         mutations,
         actions,
         getters,
+        plugins,
       };

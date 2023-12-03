@@ -288,7 +288,13 @@ export default {
     this.$store.dispatch("product/fetchProduct");
   },
   computed: {
-    ...mapGetters("product", ["products", "isFavorite", "Images", "filteredProducts"]),
+    ...mapGetters("product", [
+      "products",
+      "isFavorite",
+      "Images",
+      "filteredProducts",
+      "favoriteProducts",
+    ]),
     filteredProducts() {
       return this.products.filter((product) => {
         const productPrice = parseFloat(product.price);

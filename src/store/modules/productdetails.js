@@ -1,7 +1,10 @@
+import createPersistedState from "vuex-persistedstate";
+
 const state =
     {
         quantities: {},
         productDetails: null,
+        comments:[]
       }
      const mutations = {
         increase(state,productId) {
@@ -15,6 +18,9 @@ const state =
           setProductDetails(state, { productId, data }) {
             state.productDetails = data;
             state.quantities[productId] = 1;
+          },
+          setComment(state,{data}){
+            state.comments =data
           },
         }
       const actions= {
@@ -31,6 +37,31 @@ const state =
               console.error('Error fetching product details:', error);
             }
           },
+          async fetchComment({ commit }) {
+            const url = 'https://dummyjson.com/comments';
+            try {
+              const response = await fetch(url);
+              const data = await response.json();
+          
+              let commentsWithRating;
+          
+              if (data.comments && Array.isArray(data.comments)) {
+                // Add a random rating (between 1 and 5) to each comment
+                commentsWithRating = data.comments.map(comment => ({
+                  ...comment,
+                  rating: Math.floor(Math.random() * 5) + 1,
+                }));
+          
+                // Commit the data to the store mutation
+                commit('setComment', { data: commentsWithRating });
+              } else {
+                console.error('Invalid or missing data.comments array.');
+              }
+            } catch (error) {
+              console.error("Error fetching data:", error);
+            }
+          },
+          
           increase({ commit, state }) {
             commit('increase', state.productDetails.id);
           },
@@ -40,6 +71,7 @@ const state =
       }
    const getters= {
         productDetails: state => state.productDetails,
+        comments: state => state.comments,
         total: (state, getters) => {
             const normalPrice = parseFloat(getters.normalPrice);
             const quantity = state.quantities[state.productDetails.id] || 0;
@@ -65,6 +97,13 @@ const state =
         },
         number: state => state.quantities[state.productDetails.id] || 0,
       }
+      const plugins = [
+        // Use vuex-persistedstate as a Vuex plugin
+        createPersistedState({
+          key: "your-vuex-key", // change this to a unique key
+          paths: ["isFavorite"], // specify which state you want to persist
+        }),
+      ];
 
       export default {
         namespaced: true,
@@ -72,4 +111,5 @@ const state =
         mutations,
         actions,
         getters,
+        plugins,
       };

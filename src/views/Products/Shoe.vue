@@ -169,7 +169,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("product", ["products", "isFavorite", "Images", "filteredProducts"]),
+    ...mapGetters("product", [
+      "products",
+      "isFavorite",
+      "Images",
+      "filteredProducts",
+      "favoriteProducts",
+    ]),
     filteredProducts() {
       return this.products.filter((product) => {
         const productPrice = parseFloat(product.price);
@@ -213,6 +219,7 @@ export default {
   methods: {
     toggleFavorite(productId) {
       this.$store.dispatch("product/toggleProductFavorite", productId);
+      console.log(this.favoriteProducts);
     },
     selectCategory(category) {
       this.selectedCategory = category;
