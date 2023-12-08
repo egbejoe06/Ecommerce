@@ -292,7 +292,7 @@ a {
   display: flex;
   padding: var(--spacing-0, 0px);
   align-items: flex-start;
-  gap: var(--spacing-1, 4px);
+  gap: var(--spacing-1, 10px);
   flex: 1 0 0;
   border-radius: var(--spacing-0, 0px);
 }

@@ -15,6 +15,7 @@ import Outdoor from '../views/Products/Outdoor.vue'
 import Best from '../views/Products/Best.vue'
 import NotFound from '../views/Products/NotFound.vue'
 import Productdetails from '../views/Products/Productdetails.vue'
+import Cart from '../views/Cart.vue'
 
 const routes = [
   {
@@ -96,6 +97,16 @@ const routes = [
     path: '/product/:id',
     name: 'Productdetails',
     component: Productdetails
+  },
+  {
+    path: '/sign-up',
+    name: 'Signup',
+    component: Signup
+  },
+  {
+    path: '/Cart',
+    name: 'Cart',
+    component: Cart
   },
 ]
 

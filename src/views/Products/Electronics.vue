@@ -82,7 +82,7 @@
       <div class="mainmenu">
         <div
           class="mm"
-          v-for="(product, index) in filteredProducts.slice(0, 12)"
+          v-for="product in filteredProducts.slice(0, 12)"
           :key="product.id"
         >
           <div class="mm-1">

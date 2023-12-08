@@ -1,10 +1,10 @@
-import createPersistedState from "vuex-persistedstate";
-
+import VuexPersistence from 'vuex-persist'
 const state =
     {
         quantities: {},
         productDetails: null,
-        comments:[]
+        comments:[],
+        carts:[],
       }
      const mutations = {
         increase(state,productId) {
@@ -70,6 +70,7 @@ const state =
           },
       }
    const getters= {
+        carts: state => state.carts,
         productDetails: state => state.productDetails,
         comments: state => state.comments,
         total: (state, getters) => {
@@ -97,19 +98,15 @@ const state =
         },
         number: state => state.quantities[state.productDetails.id] || 0,
       }
-      const plugins = [
-        // Use vuex-persistedstate as a Vuex plugin
-        createPersistedState({
-          key: "your-vuex-key", // change this to a unique key
-          paths: ["isFavorite"], // specify which state you want to persist
-        }),
-      ];
-
+      const vuexPersist = new VuexPersistence({
+        key: 'your-apps-key', // Choose a key for your app
+        storage: window.localStorage, // Choose the storage method (localStorage in this case)
+      });
       export default {
         namespaced: true,
         state,
         mutations,
         actions,
         getters,
-        plugins,
+        plugins: [vuexPersist.plugin],
       };

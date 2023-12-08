@@ -1,21 +1,20 @@
-import createPersistedState from "vuex-persistedstate";
+import VuexPersistence from 'vuex-persist'
 
 const state =
     {
         Images: [],
-        isFavorite: {},
+        isFavorite: [],
         products: [],
       }
      const mutations = {
         setProduct(state, { data }) {
             state.products = data.products;
             state.Images = {};
-            state.isFavorite = {};
+            state.isFavorite = [];
             state.products.forEach((product) => {
               state.Images[product.id] = require("../../assets/favorite2.svg");
               state.isFavorite[product.id] = false;
-              console.log(state.isFavorite[product.id])
-            });
+            })
           },
           toggleFavorite(state, productId) {
             state.isFavorite[productId] = !state.isFavorite[productId];
@@ -24,7 +23,7 @@ const state =
             } else {
               state.Images[productId] = require("../../assets/favorite2.svg");
             }
-            console.log(state.favoriteProducts)
+            console.log('Updated isFavorite:', state.isFavorite);
           },
         }
       const actions= {
@@ -42,6 +41,7 @@ const state =
               }
           },
           toggleProductFavorite({ commit }, productId) {
+            console.log(`Dispatching toggleProductFavorite for product ${productId}`);
             commit('toggleFavorite', productId);
           },
       }
@@ -56,19 +56,16 @@ const state =
           return state.products.filter((product) => state.isFavorite[product.id]);
         },
       }
-      const plugins = [
-        // Use vuex-persistedstate as a Vuex plugin
-        createPersistedState({
-          key: "your-vuex-key", // change this to a unique key
-          paths: ["isFavorite"], // specify which state you want to persist
-        }),
-      ];
-
+      const vuexPersist = new VuexPersistence({
+        key: 'your-app-key', // Choose a key for your app
+        storage: window.localStorage, // Choose the storage method (localStorage in this case)
+        paths: ['isFavorite'],
+      });
       export default {
         namespaced: true,
         state,
         mutations,
         actions,
         getters,
-        plugins,
+        plugins: [vuexPersist.plugin],
       };

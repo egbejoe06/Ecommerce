@@ -30,7 +30,9 @@
               <div class="pd41">
                 <div>Shipping</div>
                 <div class="pd42">
-                  <span class="pd43">Free Shipping to Victoria teritory</span>
+                  <span class="pd43"
+                    >Free Shipping to {{ selectedCountry }}, {{ selectedCity }}</span
+                  >
                   <span class="pd44">Delivery Time: 14–17 days</span>
                 </div>
               </div>
@@ -70,9 +72,11 @@
               </div>
             </div>
             <div class="buy">
-              <div><button class="buy1">Shop now</button></div>
               <div>
-                <button class="buy2">
+                <button class="buy1" @click="add(productDetails)">Shop now</button>
+              </div>
+              <div>
+                <button class="buy2" @click="addToCart(productDetails)">
                   <div class="buy3">
                     <span><img src="../../assets/1.svg" alt="" /></span
                     ><span>Add to basket</span>
@@ -245,7 +249,6 @@
                 <div><img class="sip3" :src="product.thumbnail" alt="" /></div>
                 <div class="sip4">
                   <router-link
-                    @click="goToProductDetails()"
                     :to="{ name: 'Productdetails', params: { id: product.id } }"
                   >
                     <div class="sip5">
@@ -261,7 +264,7 @@
                     <div class="sip71">${{ product.price }}</div>
                     <div class="sip8">{{ product.discountPercentage }}%</div>
                   </div>
-                  <div class="sip9">Add to cart</div>
+                  <div class="sip9" @click="addCart(product)">Add to cart</div>
                 </div>
               </div>
             </div>
@@ -272,7 +275,7 @@
         <p>Product not found</p>
       </div>
     </div>
-    <div><Footer /></div>
+    <div style="width: 100%"><Footer /></div>
   </div>
 </template>
 
@@ -331,8 +334,9 @@ export default {
       "number",
       "productDetails",
       "comments",
+      "carts",
     ]),
-    ...mapGetters("product", ["products", "isFavorite", "Images"]),
+    ...mapGetters("product", ["products", "isFavorite", "Images", "favoriteProducts"]),
     randomComments() {
       try {
         const shuffledComments = [...this.comments];
@@ -385,6 +389,34 @@ export default {
   },
 
   methods: {
+    addCart(product) {
+      const isProductInCart = this.carts.some((item) => item.id === product.id);
+      const Quantity = 1;
+      const Price = (
+        product.price -
+        (product.discountPercentage / 100) * product.price
+      ).toFixed(2);
+      if (!isProductInCart) {
+        this.carts.push({ ...product, Quantity, Price });
+      }
+    },
+    addToCart(productDetails) {
+      const isProductInCart = this.carts.some((item) => item.id === productDetails.id);
+      const Quantity = this.number;
+      const Price = this.normalPrice;
+      if (!isProductInCart) {
+        this.carts.push({ ...productDetails, Quantity, Price });
+      }
+    },
+    add(productDetails) {
+      const isProductInCart = this.carts.some((item) => item.id === productDetails.id);
+      const Quantity = this.number;
+      const Price = this.normalPrice;
+      if (!isProductInCart) {
+        this.carts.push({ ...productDetails, Quantity, Price });
+      }
+      this.$router.push("/Cart");
+    },
     shipping() {
       fetch("https://countriesnow.space/api/v0.1/countries")
         .then((response) => response.json())
@@ -408,9 +440,6 @@ export default {
         (country) => country.country === this.selectedCountry
       );
       this.displayCities(selectedCountryData.cities);
-    },
-    goToProductDetails() {
-      console.log("hello");
     },
     calculateNormalPrice(discountPercentage, discountPrice) {
       if (typeof discountPercentage === "number" && discountPercentage !== 0) {
@@ -630,7 +659,7 @@ tbody {
 }
 .sip11 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
 }
 .siproduct {
   display: flex;
@@ -672,6 +701,7 @@ tbody {
   background: var(--tag-notif-off-tag, #ff2e00);
 }
 .sip9 {
+  cursor: pointer;
   display: flex;
   padding: var(--spacing-2, 8px) var(--spacing-3, 12px);
   justify-content: center;
@@ -722,7 +752,7 @@ tbody {
 }
 .sip2 {
   display: flex;
-  width: 300px;
+  width: 285px;
   align-items: center;
   gap: 12px;
 }
@@ -842,6 +872,7 @@ tbody {
   left: 4px;
 }
 .buy1 {
+  cursor: pointer;
   display: flex;
   height: 56px;
   padding: 16px 32px;
@@ -863,6 +894,7 @@ tbody {
   width: 200px;
 }
 .buy2 {
+  cursor: pointer;
   display: flex;
   height: 56px;
   padding: 16px 32px;

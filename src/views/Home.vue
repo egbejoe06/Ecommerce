@@ -33,7 +33,7 @@
           >
         </div>
         <div class="fsales">
-          <div v-for="fsale in fsales" class="fsales1" :key="index">
+          <div v-for="fsale in fsales" class="fsales1">
             <div class="fs1">
               <div class="dotd">{{ fsale.text }}</div>
               <div class="timer">{{ formatCountdown(fsale.countdown) }}</div>
