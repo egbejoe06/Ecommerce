@@ -2,6 +2,15 @@
   <div class="carts">
     <div><Header /></div>
     <div class="cartmain1">
+      <div class="cart-categories">
+        <div class="cartc1">
+          <div :class="{ cartc4: cCard }" class="cartc3">CARD({{ carts.length }})</div>
+          <div :class="{ cartc4: cCustomer }" class="cartc3">Customer info</div>
+          <div :class="{ cartc4: cShipping }" class="cartc3">Shipping & Payment</div>
+          <div :class="{ cartc4: cProduct }" class="cartc3">Product confirmation</div>
+        </div>
+        <div class="cartc2"></div>
+      </div>
       <div class="cartmain">
         <div class="cm1">
           <div class="cmain1">
@@ -209,6 +218,10 @@ export default {
       discount: false,
       gift: false,
       checkedout: true,
+      cCard: true,
+      cCustomer: false,
+      cShipping: false,
+      cProduct: false,
     };
   },
   components: { Header, Footer },
@@ -285,6 +298,41 @@ export default {
 };
 </script>
 <style>
+.cartc4 {
+  color: var(--text-color-light-primary-text, #262626);
+  font-feature-settings: "clig" off, "liga" off;
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 20px; /* 142.857% */
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.cartc1 {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-15, 64px);
+  color: var(--text-color-light-tritary-text, #9d9d9d);
+  font-family: Lato;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 20px; /* 142.857% */
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.cart-categories {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-5, 20px);
+}
+.cartc2 {
+  width: 100%;
+  height: var(--spacing-0, 1px);
+  background: var(--button-stroke-stroke, #d9d9d9);
+}
 .coupon {
   display: flex;
   padding: var(--spacing-0, 0px) 90px;
